@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SignUpUserDto } from './dto/signup-user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
+import { RegisterSellerDto } from './dto/register-seller.dto';
 
 @Injectable()
 export class UserService {
@@ -10,6 +11,10 @@ export class UserService {
   async signUpUser(signUpUserDto: SignUpUserDto) {
     signUpUserDto.password = await this.makeHash(signUpUserDto.password);
     await this.userRepository.createUser(signUpUserDto);
+  }
+
+  async registerSeller(userId: string, registerSellerDto: RegisterSellerDto) {
+    await this.userRepository.registerSeller(userId, registerSellerDto);
   }
 
   async makeHash(password: string) {

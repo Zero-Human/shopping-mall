@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/jwt.strategy';
-import { User, UserSchema } from './entity/user';
+import { User, UserSchema } from './entity/user.entity';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
