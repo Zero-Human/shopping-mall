@@ -16,7 +16,7 @@ export class AuthService {
     const { email, password } = signinUserDto;
     const user = await this.userRepository.findByEmail(email);
     if (!user || false === (await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('login failed');
+      throw new UnauthorizedException('로그인 실패하였습니다.');
     }
     const payload: Payload = {
       userName: user.userName,

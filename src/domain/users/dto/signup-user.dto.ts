@@ -5,6 +5,8 @@ export class SignUpUserDto {
 
   password: string;
 
+  passwordConfirm: string;
+
   userName: string;
 
   phone: string;
