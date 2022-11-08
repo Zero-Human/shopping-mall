@@ -15,17 +15,15 @@ export class AuthService {
   async signIn(signinUserDto: SignInUserDto): Promise<{ accessToken: string }> {
     const { email, password } = signinUserDto;
     const user = await this.userRepository.findByEmail(email);
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const payload: Payload = {
-        userName: user.userName,
-        id: user._id.toString(),
-      };
-      const accessToken = await this.jwtService.sign(payload);
-
-      return { accessToken };
-    } else {
+    if (!user || false === (await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('login failed');
     }
+    const payload: Payload = {
+      userName: user.userName,
+      id: user._id.toString(),
+    };
+    const accessToken = await this.jwtService.sign(payload);
+
+    return { accessToken };
   }
 }

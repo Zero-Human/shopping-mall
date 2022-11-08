@@ -12,10 +12,10 @@ export class UserRepository {
     const createUser = new this.userModel(signUpUserDto);
     createUser.save();
   }
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string) {
     return await this.userModel.findOne({ email }).lean();
   }
-  async findById(id: string): Promise<User> {
+  async findById(id: string) {
     return await this.userModel.findOne({ id }).lean();
   }
 }
