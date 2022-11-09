@@ -10,7 +10,7 @@ export class UserService {
 
   async signUpUser(signUpUserDto: SignUpUserDto) {
     if (signUpUserDto.password !== signUpUserDto.passwordConfirm) {
-      throw new BadRequestException(' 비밀번호가 맞지 않습니다.');
+      throw new BadRequestException(' 비밀번호와 비밀번호확인이 다릅니다.');
     }
     signUpUserDto.password = await this.makeHash(signUpUserDto.password);
     await this.userRepository.createUser(signUpUserDto);

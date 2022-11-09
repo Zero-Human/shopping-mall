@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PorductsModule } from './domain/porducts/porducts.module';
-import { UserModule } from './domain/users/user.module';
-import { MarketModule } from './domain/market/market.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DomainModule } from './domain/domain.module';
 
 @Module({
   imports: [
-    PorductsModule,
-    UserModule,
-    MarketModule,
+    DomainModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
@@ -24,7 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
