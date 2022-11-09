@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MarketModule } from './market/market.module';
-import { PorductsModule } from './porducts/porducts.module';
+import { ProductModule } from './product/product.module';
 import { UserModule } from './users/user.module';
 
 @Module({
-  imports: [PorductsModule, UserModule, MarketModule],
+  imports: [ProductModule, UserModule, MarketModule],
   controllers: [],
   providers: [],
-  exports: [PorductsModule, UserModule, MarketModule],
+  exports: [ProductModule, UserModule, MarketModule],
 })
 export class DomainModule {}

@@ -4,6 +4,6 @@ import { MarketController } from './market.controller';
 
 @Module({
   providers: [MarketService],
-  controllers: [MarketController]
+  controllers: [MarketController],
 })
 export class MarketModule {}
