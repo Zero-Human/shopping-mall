@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUserId } from '../users/decorator/get-user.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { SellerGuard } from './guard/seller.guard';
@@ -21,8 +22,11 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @Post('')
   @UseGuards(AuthGuard(), SellerGuard)
-  async createProduct(@Body() createProductDto: CreateProductDto) {
-    await this.productService.createProduct(createProductDto);
+  async createProduct(
+    @GetUserId() userId: string,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    await this.productService.createProduct(userId, createProductDto);
     return Object.assign({
       statusCode: HttpStatus.CREATED,
       message: '상품 등록에 성공하였습니다.',
