@@ -1,8 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 @Injectable()
@@ -15,6 +15,6 @@ export class SellerGuard implements CanActivate {
     if (req.user.seller) {
       return true;
     }
-    throw new UnauthorizedException('권한이 없습니다.');
+    throw new ForbiddenException('권한이 없습니다.');
   }
 }

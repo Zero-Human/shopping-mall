@@ -16,10 +16,10 @@ import { SellerGuard } from './guard/seller.guard';
 import { ProductService } from './products.service';
 
 @Controller('products')
-@UseGuards(AuthGuard(), SellerGuard)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @Post('')
+  @UseGuards(AuthGuard(), SellerGuard)
   async createProduct(@Body() createProductDto: CreateProductDto) {
     await this.productService.createProduct(createProductDto);
     return Object.assign({
@@ -29,6 +29,7 @@ export class ProductController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard(), SellerGuard)
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -37,6 +38,15 @@ export class ProductController {
     return Object.assign({
       statusCode: HttpStatus.OK,
       message: '상품 수정에 성공하였습니다.',
+    });
+  }
+  @Delete(':id')
+  @UseGuards(AuthGuard(), SellerGuard)
+  async deleteProduct(@Param('id') id: string) {
+    await this.productService.deleteProduct(id);
+    return Object.assign({
+      statusCode: HttpStatus.OK,
+      message: '상품 삭제에 성공하였습니다.',
     });
   }
   @Get(':id')

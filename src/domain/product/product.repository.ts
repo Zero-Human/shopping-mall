@@ -17,6 +17,9 @@ export class ProductRepository {
   async updateProduct(id: string, updateProductDto: UpdateProductDto) {
     await this.productModel.findByIdAndUpdate({ id }, updateProductDto).exec();
   }
+  async deleteById(id: string) {
+    return await this.productModel.deleteOne({ id });
+  }
   async findById(id: string) {
     return await this.productModel.findOne({ id });
   }
