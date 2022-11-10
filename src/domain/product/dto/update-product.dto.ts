@@ -1,5 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsDateString, IsNumber, IsObject, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 import {
   MainCategory,
   ProductOption,
@@ -8,25 +17,29 @@ import {
 } from '../entity/product.entity';
 
 export class UpdateProductDto {
+  @MaxLength(80)
   @IsString()
   productName: string;
-  @Type(() => MainCategory)
-  @IsString()
+  @IsEnum(MainCategory)
   mainCategory: MainCategory;
-  @Type(() => SubCategory)
-  @IsString()
+
+  @IsEnum(SubCategory)
   subCategory: SubCategory;
+  @IsOptional()
+  @ValidateNested()
   @Type(() => ProductOption)
   @IsObject()
   productOption: ProductOption;
   @IsNumber()
   price: number;
+  @MaxLength(1000)
   @IsString()
   description: string;
+  @IsOptional()
   @IsDateString()
   purchaseDate: Date;
-  @Type(() => PurchaseArea)
-  @IsString()
+
+  @IsEnum(PurchaseArea)
   purchaseArea: PurchaseArea;
   @IsDateString()
   purchaseDeadline: Date;

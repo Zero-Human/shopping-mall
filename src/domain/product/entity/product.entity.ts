@@ -1,25 +1,27 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type ClothingCategory = '남성' | '여성';
-export type BagCategory = '에코백' | '백팩' | '기타';
-export type ShoesCategory = '부츠' | '스니커즈' | '기타';
+export enum PurchaseArea {
+  KOREA = '한국',
+  JAPAN = '일본',
+  USA = '미국',
+  CHINA = '중국',
+}
+export enum MainCategory {
+  CLOTHING = '의류',
+  BAG = '가방',
+  CHOES = '신발',
+}
+export enum SubCategory {
+  MALE = '남성',
+  FEMALE = '여성',
+  ECO_BAG = '에코백',
+  BACKPACK = '백팩',
+  ETC = '기타',
+  BOOTS = '부츠',
+  SNEEZE = '스니커즈',
+}
 
-export class PurchaseArea {
-  purchaseArea: '한국' | '일본' | '미국' | '중국';
-}
-export class MainCategory {
-  mainCategory: '의류' | '가방' | '신발';
-}
-export class SubCategory {
-  subCategory: ClothingCategory | BagCategory | ShoesCategory;
-}
-export class Image {
-  originName: string;
-  UuidName: string;
-  path: string;
-  rank: number;
-}
 export class ProductOption {
   optionName: string;
   count: number;
@@ -42,15 +44,13 @@ export class Product extends Document {
   @Prop()
   purchaseDate: Date;
   @Prop()
-  thumbnailImage: Image[];
-  @Prop()
-  detailImage: Image[];
-  @Prop()
   purchaseArea: PurchaseArea;
   @Prop()
   purchaseDeadline: Date;
   @Prop()
   deliveryCharge: number;
+  @Prop()
+  createAt: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -52,6 +53,29 @@ export class ProductController {
   @Get(':id')
   async getDetailProduct(@Param('id') id: string) {
     const data = await this.productService.getDetailProduct(id);
+    return Object.assign({
+      statusCode: HttpStatus.OK,
+      data,
+    });
+  }
+  @Get('')
+  async getAllProduct(
+    @Query('order') order: string,
+    @Query('search') search: string,
+    @Query('maincategory') mainCategory: string,
+    @Query('subcategory') subCategory: string,
+    @Query('country') country: string,
+  ) {
+    const countryList = country?.split('|');
+    const maincategoryList = mainCategory?.split('|');
+    const subcategoryList = subCategory?.split('|');
+    const data = await this.productService.getAllProduct(
+      maincategoryList,
+      subcategoryList,
+      countryList,
+      order,
+      search,
+    );
     return Object.assign({
       statusCode: HttpStatus.OK,
       data,
