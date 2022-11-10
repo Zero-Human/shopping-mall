@@ -13,16 +13,18 @@ export class ProductRepository {
   async createProduct(createProductDto: CreateProductDto) {
     const createProduct = new this.productModel(createProductDto);
     createProduct.createAt = new Date();
-    createProduct.save();
+    return await createProduct.save();
   }
   async updateProduct(id: string, updateProductDto: UpdateProductDto) {
-    await this.productModel.findByIdAndUpdate({ id }, updateProductDto).exec();
+    await this.productModel
+      .findByIdAndUpdate({ _id: id }, updateProductDto)
+      .exec();
   }
   async deleteById(id: string) {
-    return await this.productModel.deleteOne({ id });
+    return await this.productModel.deleteOne({ _id: id });
   }
   async findById(id: string) {
-    return await this.productModel.findOne({ id });
+    return await this.productModel.findOne({ _id: id });
   }
   async findAll(
     mainCategoryList: string[],

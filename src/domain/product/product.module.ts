@@ -5,9 +5,11 @@ import { PassportModule } from '@nestjs/passport';
 import { ProductRepository } from './product.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './entity/product.entity';
+import { MarketModule } from '../market/market.module';
 
 @Module({
   imports: [
+    MarketModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
   ],
