@@ -2,12 +2,12 @@ import { Type } from 'class-transformer';
 import { IsDateString, IsNumber, IsObject, IsString } from 'class-validator';
 import {
   MainCategory,
-  SubCategory,
-  PurchaseArea,
   ProductOption,
+  PurchaseArea,
+  SubCategory,
 } from '../entity/product.entity';
 
-export class CreateProductDto {
+export class UpdateProductDto {
   @IsString()
   productName: string;
   @Type(() => MainCategory)
