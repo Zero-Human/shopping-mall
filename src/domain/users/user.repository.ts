@@ -11,7 +11,7 @@ export class UserRepository {
 
   async createUser(signUpUserDto: SignUpUserDto) {
     const createUser = new this.userModel(signUpUserDto);
-    createUser.save();
+    await createUser.save();
   }
   async findByEmail(email: string) {
     return await this.userModel.findOne({ email }).lean();
