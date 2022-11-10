@@ -3,10 +3,14 @@ import { SignUpUserDto } from './dto/signup-user.dto';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { RegisterSellerDto } from './dto/register-seller.dto';
+import { MarketService } from '../market/market.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly marketService: MarketService,
+  ) {}
 
   async signUpUser(signUpUserDto: SignUpUserDto) {
     if (signUpUserDto.password !== signUpUserDto.passwordConfirm) {
@@ -17,6 +21,7 @@ export class UserService {
   }
 
   async registerSeller(userId: string, registerSellerDto: RegisterSellerDto) {
+    await this.marketService.createMarket(userId);
     await this.userRepository.registerSeller(userId, registerSellerDto);
   }
 
