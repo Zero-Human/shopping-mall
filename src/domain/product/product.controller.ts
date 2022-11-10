@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Param,
   Post,
@@ -35,6 +37,14 @@ export class ProductController {
     return Object.assign({
       statusCode: HttpStatus.OK,
       message: '상품 수정에 성공하였습니다.',
+    });
+  }
+  @Get(':id')
+  async getDetailProduct(@Param('id') id: string) {
+    const data = await this.productService.getDetailProduct(id);
+    return Object.assign({
+      statusCode: HttpStatus.OK,
+      data,
     });
   }
 }

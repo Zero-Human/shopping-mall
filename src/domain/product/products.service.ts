@@ -17,4 +17,11 @@ export class ProductService {
     }
     await this.productRepository.updateProduct(id, updateProductDto);
   }
+  async getDetailProduct(id: string) {
+    const product = await this.productRepository.findById(id);
+    if (!product) {
+      throw new BadRequestException('해당 상품이 없습니다.');
+    }
+    return product;
+  }
 }
