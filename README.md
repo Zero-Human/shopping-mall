@@ -15,6 +15,7 @@
 > User<br>
 > Product<br>
 > Market<br>
+> Market은 Seller의 UserId와 Product의 ProductId를 가지고 있습니다.
 
 
 
