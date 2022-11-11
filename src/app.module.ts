@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DomainModule } from './domain/domain.module';
+import { ExceptionModule } from './utill/Exception/exception.module';
 
 @Module({
   imports: [
+    ExceptionModule,
     DomainModule,
     ConfigModule.forRoot({
       isGlobal: true,
