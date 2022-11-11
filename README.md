@@ -1,73 +1,110 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# shopping-mall
+## 프로젝트 개요
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**제품 쇼핑몰 Rest API 입니다.**
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> 회원가입, 로그인, 상품등록, 수정, 삭제, 상세 조회, 리스트 조회 기능이 있습니다.<br> 
 
-## Description
+## 기술 스택
+- Framework: Nest.js
+- ODM : Mongoose
+- DB : MongoDB
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## DB Modeling
+<b>컬렉션 구성</b>
+> User<br>
+> Product<br>
+> Market<br>
 
-## Installation
 
+
+## API 문서
+자세한 내용은 아래 링크 참조<br>
+
+| 기능구분  | 기능  | Method | URL | 
+| ------------- | ------------- | ------------- | ------------- | 
+| 유저 | 회원가입 | POST | /users/signup  |                 
+|  | 로그인 | POST | /users/signin  | 
+|  | Seller 등록 | POST  | /users/seller/register  |
+| 상품 |  상품등록  | POST | /products  | 
+|  | 상품수정 | PUT  | /products/:id |
+|  | 상품삭제 | DELETE  | /products/:id |  |
+|  | 상품리스트조회 | GET  | /products |  |
+|  | 상품상세조회 | GET  | /products/:id |  |
+
+
+## 구현 기능 관련
+<b> 회원가입 </b></br>
+ 회원가입 기능입니다.
+ 
+<b> 로그인 </b></br>
+ 로그인이 되면 jwt발급해줍니다.
+
+<b> Seller 등록 </b></br>
+ 회원가입된 유저만 Seller 등록이 가능합니다.
+
+<b> 상품등록 </b></br>
+ Seller만 상품을 등록할 수 있습니다.
+
+<b> 상품수정 </b></br>
+ Seller만 상품을 수정할 수 있습니다.
+
+<b> 상품삭제 </b></br>
+ Seller만 상품을 삭제할 수 있습니다.
+
+<b> 상품리스트조회 </b></br>
+ 로그인 없이 상품 조회가 가능하고, 상품명 검색, 카테고리/ 국가별 필터 및 검색, 상품 등록날짜 및 상품 주문 마감일 정렬 기능이 있습니다.
+
+<b> 상품상세조회 </b></br>
+ 로그인 없이 상품 상세 조회가 가능합니다.
+
+## 설치 및 실행 방법
+nodejs와 npm이 install 되어있지 않다면 먼저 install 과정 진행
+<details>
+    <summary> 프로젝트 설치 밀 실행 과정</summary>
+
+<b>1. 프로젝트 clone 및 디렉토리 이동</b>
 ```bash
-$ npm install
+https://github.com/Zero-Human/shopping-mall.git
+
 ```
-
-## Running the app
-
+<b>2. .env.dev, .env.test 파일 생성</b>
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+MONGODB_URL=
+JWT_TOKEN=
+DB_USERNAME=
+DB_PASSWORD=
+SECRET_KEY = 
+EXPIRES_IN = 
 ```
+<b>3. node package 설치</b>
+```javascript
+npm install
+```
+<b>4. 서버 실행</b>
+```javascript
+npm start
+```
+</details>
 
-## Test
-
+<details>
+    <summary>Test 실행 방법</summary>
+    
+<b>1. .env.test 파일 생성</b>
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+PORT=
+DB_HOST=
+DB_USERNAME=
+DB_PASSWORD=
+DB_NAME=test_commerce
+DB=mysql
+DB_SYNC=true
 ```
+<b>2. test 실행</b>
+```javascript
+npm run test
+```
+</details>
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
