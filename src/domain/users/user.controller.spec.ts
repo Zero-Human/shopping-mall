@@ -1,11 +1,9 @@
-import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth/auth.service';
 import { SignInUserDto } from './dto/signin-user.dto';
 import { SignUpUserDto } from './dto/signup-user.dto';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import jwt from 'jsonwebtoken';
 import { PassportModule } from '@nestjs/passport';
 import { RegisterSellerDto } from './dto/register-seller.dto';
 
