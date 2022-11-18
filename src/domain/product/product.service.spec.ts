@@ -14,7 +14,7 @@ import { ProductService } from './products.service';
 const productoption: ProductOption = { optionName: 'optionName', count: 1 };
 const mockMarketService = () => ({
   registerProduct: jest.fn(),
-  deleteMarket: jest.fn(),
+  deleteProductInMarket: jest.fn(),
 });
 
 const mockRepository = () => ({
@@ -135,8 +135,8 @@ describe('ProductService', () => {
     expect(spyRepository.findById).toHaveBeenCalledWith(id);
     expect(spyRepository.deleteById).toHaveBeenCalled();
     expect(spyRepository.deleteById).toHaveBeenCalledWith(id);
-    expect(spyMarketService.deleteMarket).toHaveBeenCalled();
-    expect(spyMarketService.deleteMarket).toHaveBeenCalledWith({
+    expect(spyMarketService.deleteProductInMarket).toHaveBeenCalled();
+    expect(spyMarketService.deleteProductInMarket).toHaveBeenCalledWith({
       productName: 'productName',
       mainCategory: MainCategory.BAG,
       subCategory: SubCategory.BACKPACK,
