@@ -9,7 +9,7 @@ export class MarketService {
   async createMarket(userId: string) {
     await this.marketRepositroy.createMarket(userId);
   }
-  async deleteMarket(product: Product) {
+  async deleteProductInMarket(product: Product) {
     const market = await this.marketRepositroy.findByProduct(product._id);
     market.productList.splice(market.productList.indexOf(product._id), 1);
     await this.marketRepositroy.updateMarket(market);

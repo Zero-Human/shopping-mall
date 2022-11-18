@@ -26,6 +26,6 @@ export class UserService {
   }
 
   async makeHash(password: string) {
-    return await await bcrypt.hash(password, 8);
+    return await bcrypt.hash(password, 8);
   }
 }

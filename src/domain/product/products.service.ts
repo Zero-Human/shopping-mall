@@ -30,7 +30,7 @@ export class ProductService {
     if (!product) {
       throw new BadRequestException('해당 상품이 없습니다.');
     }
-    await this.marketService.deleteMarket(product);
+    await this.marketService.deleteProductInMarket(product);
     await this.productRepository.deleteById(id);
   }
   async getDetailProduct(id: string) {
