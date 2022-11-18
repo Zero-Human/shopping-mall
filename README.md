@@ -1,4 +1,15 @@
 # shopping-mall
+
+## 목차
+
+  * [프로젝트 개요](#프로젝트-개요)
+      - [ 기술 스택](#기술-스택)
+      - [ DB-Modeling](#db-modeling)
+      - [ API 문서](#api-문서)
+  * [프로젝트 기능 구현내용](#구현-기능-관련)
+  * [Test 결과](#test-결과)
+  * [설치 및 실행 방법](#설치-및-실행-방법)
+
 ## 프로젝트 개요
 
 **제품 쇼핑몰 Rest API 입니다.**
@@ -35,6 +46,7 @@
 ### 기술관련
  - winston module을 사용하여 logging 처리
  - class-validator module 사용하여 validation 처리
+ - jwt로 토큰을 발행하여 인증 처리
 
 ### 회원가입
  - 회원가입 기능입니다.
@@ -104,6 +116,14 @@
 ### 작업예정
  - Test 코드 작성
  - 상품 사진, 동영상 업로드 기능
+ 
+## Test 결과
+
+### 유닛테스트 결과
+<img src="https://user-images.githubusercontent.com/70467297/202688290-c88e342f-5995-4f5a-a6a2-2e0a94751906.png"   height="230"/>
+
+
+ 
 
 ## 설치 및 실행 방법
 nodejs와 npm이 install 되어있지 않다면 먼저 install 과정 진행
