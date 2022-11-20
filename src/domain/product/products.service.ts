@@ -3,16 +3,27 @@ import { QueryOptions } from 'mongoose';
 import { MarketService } from '../market/market.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ImageType } from './entity/product.entity';
-
+import { ImageType, Product } from './entity/product.entity';
+import * as AWS from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 import { ProductRepository } from './product.repository';
 
 @Injectable()
 export class ProductService {
+  private s3: AWS.S3;
+  private bucket: string;
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly marketService: MarketService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.bucket = configService.get('AWS_BUCKET_NAME');
+    this.s3 = new AWS.S3({
+      accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+      secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+      region: configService.get('AWS_BUCKET_REGION'),
+    });
+  }
 
   async createProduct(
     files: {
@@ -22,20 +33,11 @@ export class ProductService {
     userId: string,
     createProductDto: CreateProductDto,
   ) {
-    const detailImageList: ImageType[] = files?.detail.map((element, index) => {
-      return {
-        path: element.location,
-        sequence: index,
-      };
-    });
-    const thumbnailImageList: ImageType[] = files?.thumbnail.map(
-      (element, index) => {
-        return {
-          path: element.location,
-          sequence: index,
-        };
-      },
+    const detailImageList: ImageType[] = this.makeImageTypeList(files.detail);
+    const thumbnailImageList: ImageType[] = this.makeImageTypeList(
+      files.thumbnail,
     );
+
     const product = await this.productRepository.createProduct(
       detailImageList,
       thumbnailImageList,
@@ -44,13 +46,27 @@ export class ProductService {
 
     await this.marketService.registerProduct(userId, product);
   }
-  async updateProduct(id: string, updateProductDto: UpdateProductDto) {
+
+  async updateProduct(
+    files: {
+      detail?: Express.MulterS3.File[];
+      thumbnail?: Express.MulterS3.File[];
+    },
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ) {
     const product = await this.productRepository.findById(id);
     if (!product) {
       throw new BadRequestException('해당 상품이 없습니다.');
     }
+    await this.deleteFile(product);
+    updateProductDto.detailImagePath = this.makeImageTypeList(files.detail);
+    updateProductDto.thumbnailImagePath = this.makeImageTypeList(
+      files.thumbnail,
+    );
     await this.productRepository.updateProduct(id, updateProductDto);
   }
+
   async deleteProduct(id: string) {
     const product = await this.productRepository.findById(id);
     if (!product) {
@@ -58,7 +74,9 @@ export class ProductService {
     }
     await this.marketService.deleteMarket(product);
     await this.productRepository.deleteById(id);
+    await this.deleteFile(product);
   }
+
   async getDetailProduct(id: string) {
     const product = await this.productRepository.findById(id);
     if (!product) {
@@ -66,6 +84,7 @@ export class ProductService {
     }
     return product;
   }
+
   async getAllProduct(
     mainCategoryList: string[],
     subCategoryList: string[],
@@ -87,6 +106,35 @@ export class ProductService {
     }
     return await this.productRepository.findAll(query, sort);
   }
+
+  makeImageTypeList(imageList: Express.MulterS3.File[]) {
+    return imageList.map((element, index) => {
+      return {
+        name: element.key,
+        path: element.location,
+        sequence: index,
+      };
+    });
+  }
+
+  async deleteFile(product: Product) {
+    const deleteDetilImage = product.detailImagePath.map((element) => {
+      return { Key: element.name };
+    });
+    const deleteThumbnailImage = product.thumbnailImagePath.map((element) => {
+      return { Key: element.name };
+    });
+    await this.s3
+      .deleteObjects({
+        Bucket: this.bucket,
+        Delete: {
+          Objects: [...deleteThumbnailImage, ...deleteDetilImage],
+          Quiet: false,
+        },
+      })
+      .promise();
+  }
+
   createQueryOption(
     mainCategoryList: string[],
     subCategoryList: string[],

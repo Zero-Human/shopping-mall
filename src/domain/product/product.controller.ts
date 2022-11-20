@@ -51,11 +51,23 @@ export class ProductController {
 
   @Put(':id')
   @UseGuards(AuthGuard(), SellerGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'detail', maxCount: 10 },
+      { name: 'thumbnail', maxCount: 8 },
+    ]),
+    new TransformInterceptor(),
+  )
   async updateProduct(
+    @UploadedFiles()
+    files: {
+      detail?: Express.MulterS3.File[];
+      thumbnail?: Express.MulterS3.File[];
+    },
     @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body('product') updateProductDto: UpdateProductDto,
   ) {
-    await this.productService.updateProduct(id, updateProductDto);
+    await this.productService.updateProduct(files, id, updateProductDto);
     return Object.assign({
       statusCode: HttpStatus.OK,
       message: '상품 수정에 성공하였습니다.',
