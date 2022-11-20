@@ -27,6 +27,11 @@ export class ProductOption {
   count: number;
 }
 
+export interface ImageType {
+  path: string;
+  sequence: number;
+}
+
 @Schema()
 export class Product extends Document {
   @Prop()
@@ -51,6 +56,10 @@ export class Product extends Document {
   deliveryCharge: number;
   @Prop()
   createAt: Date;
+  @Prop()
+  detailImagePath: ImageType[];
+  @Prop()
+  thumbnailImagePath: ImageType[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
