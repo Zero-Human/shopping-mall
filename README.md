@@ -20,6 +20,7 @@
 - Framework: Nest.js
 - ODM : Mongoose
 - DB : MongoDB
+- AWS : S3
 
 ## DB Modeling
 <b>컬렉션 구성</b>
@@ -85,6 +86,8 @@
    - 구매지역 (한국, 미국, 일본, 중국) 
    - 주문마감일 
    - 배달비
+   - 상세 파일
+   - 썸네일 
 
 ### 상품수정
  - Seller만 상품을 수정할 수 있습니다.
@@ -113,9 +116,6 @@
 ### 상품상세조회
  - 로그인 없이 상품 상세 조회가 가능합니다.
  
-### 작업예정
- - Test 코드 작성
- - 상품 사진, 동영상 업로드 기능
  
 ## Test 결과
 
@@ -143,6 +143,10 @@ DB_USERNAME=
 DB_PASSWORD=
 SECRET_KEY = 
 EXPIRES_IN = 
+AWS_BUCKET_REGION=
+AWS_BUCKET_NAME=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
 ```
 <b>3. node package 설치</b>
 ```javascript
