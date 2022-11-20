@@ -8,13 +8,17 @@ import {
   Post,
   Put,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { GetUserId } from '../users/decorator/get-user.decorator';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { SellerGuard } from './guard/seller.guard';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { ProductService } from './products.service';
 
 @Controller('products')
@@ -22,11 +26,23 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @Post('')
   @UseGuards(AuthGuard(), SellerGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'detail', maxCount: 10 },
+      { name: 'thumbnail', maxCount: 8 },
+    ]),
+    new TransformInterceptor(),
+  )
   async createProduct(
+    @Body('product') createProductDto: CreateProductDto,
+    @UploadedFiles()
+    files: {
+      detail?: Express.MulterS3.File[];
+      thumbnail?: Express.MulterS3.File[];
+    },
     @GetUserId() userId: string,
-    @Body() createProductDto: CreateProductDto,
   ) {
-    await this.productService.createProduct(userId, createProductDto);
+    await this.productService.createProduct(files, userId, createProductDto);
     return Object.assign({
       statusCode: HttpStatus.CREATED,
       message: '상품 등록에 성공하였습니다.',

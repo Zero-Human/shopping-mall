@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { QueryOptions } from 'mongoose';
 import { MarketService } from '../market/market.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ImageType } from './entity/product.entity';
 
 import { ProductRepository } from './product.repository';
 
@@ -12,10 +14,34 @@ export class ProductService {
     private readonly marketService: MarketService,
   ) {}
 
-  async createProduct(userId: string, createProductDto: CreateProductDto) {
+  async createProduct(
+    files: {
+      detail?: Express.MulterS3.File[];
+      thumbnail?: Express.MulterS3.File[];
+    },
+    userId: string,
+    createProductDto: CreateProductDto,
+  ) {
+    const detailImageList: ImageType[] = files?.detail.map((element, index) => {
+      return {
+        path: element.location,
+        sequence: index,
+      };
+    });
+    const thumbnailImageList: ImageType[] = files?.thumbnail.map(
+      (element, index) => {
+        return {
+          path: element.location,
+          sequence: index,
+        };
+      },
+    );
     const product = await this.productRepository.createProduct(
+      detailImageList,
+      thumbnailImageList,
       createProductDto,
     );
+
     await this.marketService.registerProduct(userId, product);
   }
   async updateProduct(id: string, updateProductDto: UpdateProductDto) {
@@ -47,12 +73,39 @@ export class ProductService {
     order: string,
     search: string,
   ) {
-    return await this.productRepository.findAll(
+    const query = this.createQueryOption(
       mainCategoryList,
       subCategoryList,
       countryList,
-      order,
       search,
     );
+    let sort: { purchaseDeadline?: number; createAt?: number };
+    if (order === 'purchaseDeadline') {
+      sort = { purchaseDeadline: 1 };
+    } else {
+      sort = { createAt: -1 };
+    }
+    return await this.productRepository.findAll(query, sort);
+  }
+  createQueryOption(
+    mainCategoryList: string[],
+    subCategoryList: string[],
+    countryList: string[],
+    search: string,
+  ) {
+    const query: QueryOptions = {};
+    if (mainCategoryList) {
+      query['mainCategory'] = { $in: mainCategoryList };
+    }
+    if (subCategoryList) {
+      query['subCategory'] = { $in: subCategoryList };
+    }
+    if (countryList) {
+      query['purchaseArea'] = { $in: countryList };
+    }
+    if (search) {
+      query['productName'] = search;
+    }
+    return query;
   }
 }
