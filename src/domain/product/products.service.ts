@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { QueryOptions } from 'mongoose';
 import { MarketService } from '../market/market.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -47,12 +48,39 @@ export class ProductService {
     order: string,
     search: string,
   ) {
-    return await this.productRepository.findAll(
+    const query = this.createQueryOption(
       mainCategoryList,
       subCategoryList,
       countryList,
-      order,
       search,
     );
+    let sort: { purchaseDeadline?: number; createAt?: number };
+    if (order === 'purchaseDeadline') {
+      sort = { purchaseDeadline: 1 };
+    } else {
+      sort = { createAt: -1 };
+    }
+    return await this.productRepository.findAll(query, sort);
+  }
+  createQueryOption(
+    mainCategoryList: string[],
+    subCategoryList: string[],
+    countryList: string[],
+    search: string,
+  ) {
+    const query: QueryOptions = {};
+    if (mainCategoryList) {
+      query['mainCategory'] = { $in: mainCategoryList };
+    }
+    if (subCategoryList) {
+      query['subCategory'] = { $in: subCategoryList };
+    }
+    if (countryList) {
+      query['purchaseArea'] = { $in: countryList };
+    }
+    if (search) {
+      query['productName'] = search;
+    }
+    return query;
   }
 }
