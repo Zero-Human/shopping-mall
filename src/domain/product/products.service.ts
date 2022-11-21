@@ -108,6 +108,9 @@ export class ProductService {
   }
 
   makeImageTypeList(imageList: Express.MulterS3.File[]) {
+    if (imageList === undefined) {
+      return [];
+    }
     return imageList.map((element, index) => {
       return {
         name: element.key,
