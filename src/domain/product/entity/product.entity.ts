@@ -29,6 +29,7 @@ export class ProductOption {
 
 export interface ImageType {
   path: string;
+  name: string;
   sequence: number;
 }
 
