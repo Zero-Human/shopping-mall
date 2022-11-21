@@ -10,6 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {
+  ImageType,
   MainCategory,
   ProductOption,
   PurchaseArea,
@@ -45,4 +46,9 @@ export class UpdateProductDto {
   purchaseDeadline: Date;
   @IsNumber()
   deliveryCharge: number;
+
+  @IsOptional()
+  detailImagePath?: ImageType[];
+  @IsOptional()
+  thumbnailImagePath?: ImageType[];
 }

@@ -21,7 +21,7 @@ import { multerOptionsFactory } from './util/multer.options';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
   ],
-  providers: [ProductService, ProductRepository],
+  providers: [ProductService, ProductRepository, ConfigService],
   controllers: [ProductController],
 })
 export class ProductModule {}

@@ -35,14 +35,14 @@ export class ProductController {
   )
   async createProduct(
     @Body('product') createProductDto: CreateProductDto,
+    @GetUserId() userId: string,
     @UploadedFiles()
-    files: {
+    files?: {
       detail?: Express.MulterS3.File[];
       thumbnail?: Express.MulterS3.File[];
     },
-    @GetUserId() userId: string,
   ) {
-    await this.productService.createProduct(files, userId, createProductDto);
+    await this.productService.createProduct(userId, createProductDto, files);
     return Object.assign({
       statusCode: HttpStatus.CREATED,
       message: '상품 등록에 성공하였습니다.',
@@ -51,11 +51,23 @@ export class ProductController {
 
   @Put(':id')
   @UseGuards(AuthGuard(), SellerGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'detail', maxCount: 10 },
+      { name: 'thumbnail', maxCount: 8 },
+    ]),
+    new TransformInterceptor(),
+  )
   async updateProduct(
     @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body('product') updateProductDto: UpdateProductDto,
+    @UploadedFiles()
+    files?: {
+      detail?: Express.MulterS3.File[];
+      thumbnail?: Express.MulterS3.File[];
+    },
   ) {
-    await this.productService.updateProduct(id, updateProductDto);
+    await this.productService.updateProduct(id, updateProductDto, files);
     return Object.assign({
       statusCode: HttpStatus.OK,
       message: '상품 수정에 성공하였습니다.',
