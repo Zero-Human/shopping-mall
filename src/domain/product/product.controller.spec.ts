@@ -80,12 +80,13 @@ describe('ProductController', () => {
     };
     const userId = '123eqwadsczx';
 
-    const result = await controller.createProduct(userId, createProductDto);
+    const result = await controller.createProduct(createProductDto, userId);
 
     expect(spyService.createProduct).toHaveBeenCalled();
     expect(spyService.createProduct).toHaveBeenCalledWith(
       userId,
       createProductDto,
+      undefined,
     );
     expect(result).toEqual({
       statusCode: 201,
@@ -111,7 +112,11 @@ describe('ProductController', () => {
     const result = await controller.updateProduct(id, updateProductDto);
 
     expect(spyService.updateProduct).toHaveBeenCalled();
-    expect(spyService.updateProduct).toHaveBeenCalledWith(id, updateProductDto);
+    expect(spyService.updateProduct).toHaveBeenCalledWith(
+      id,
+      updateProductDto,
+      undefined,
+    );
     expect(result).toEqual({
       statusCode: 200,
       message: '상품 수정에 성공하였습니다.',

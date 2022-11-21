@@ -48,7 +48,7 @@ export class UpdateProductDto {
   deliveryCharge: number;
 
   @IsOptional()
-  detailImagePath: ImageType[];
+  detailImagePath?: ImageType[];
   @IsOptional()
-  thumbnailImagePath: ImageType[];
+  thumbnailImagePath?: ImageType[];
 }

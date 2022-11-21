@@ -26,12 +26,12 @@ export class ProductService {
   }
 
   async createProduct(
-    files: {
+    userId: string,
+    createProductDto: CreateProductDto,
+    files?: {
       detail?: Express.MulterS3.File[];
       thumbnail?: Express.MulterS3.File[];
     },
-    userId: string,
-    createProductDto: CreateProductDto,
   ) {
     const detailImageList: ImageType[] = this.makeImageTypeList(files.detail);
     const thumbnailImageList: ImageType[] = this.makeImageTypeList(
@@ -48,12 +48,12 @@ export class ProductService {
   }
 
   async updateProduct(
-    files: {
+    id: string,
+    updateProductDto: UpdateProductDto,
+    files?: {
       detail?: Express.MulterS3.File[];
       thumbnail?: Express.MulterS3.File[];
     },
-    id: string,
-    updateProductDto: UpdateProductDto,
   ) {
     const product = await this.productRepository.findById(id);
     if (!product) {

@@ -1,4 +1,6 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from 'aws-sdk';
 import { MarketService } from '../market/market.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -7,6 +9,7 @@ import {
   ProductOption,
   PurchaseArea,
   SubCategory,
+  ImageType,
 } from './entity/product.entity';
 import { ProductRepository } from './product.repository';
 import { ProductService } from './products.service';
@@ -16,7 +19,7 @@ const mockMarketService = () => ({
   registerProduct: jest.fn(),
   deleteProductInMarket: jest.fn(),
 });
-
+const emptyImageTypeList: ImageType[] = [];
 const mockRepository = () => ({
   createProduct: jest.fn(),
   findById: jest.fn(() => {
@@ -32,6 +35,8 @@ const mockRepository = () => ({
       purchaseDeadline: new Date(2020, 11, 12),
       deliveryCharge: 4000,
       createAt: new Date(2020, 11, 12),
+      detailImagePath: emptyImageTypeList,
+      thumbnailImagePath: emptyImageTypeList,
     };
   }),
   updateProduct: jest.fn(),
@@ -60,7 +65,9 @@ describe('ProductService', () => {
   let spyMarketService: MarketService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule],
       providers: [
+        ConfigService,
         ProductService,
         {
           provide: ProductRepository,
@@ -79,6 +86,8 @@ describe('ProductService', () => {
   });
 
   it('createProduct() - 성공', async () => {
+    const detail: Express.MulterS3.File[] = [];
+    const thumbnail: Express.MulterS3.File[] = [];
     const createProductDto: CreateProductDto = {
       productName: 'productName',
       mainCategory: MainCategory.BAG,
@@ -92,15 +101,24 @@ describe('ProductService', () => {
       deliveryCharge: 4000,
     };
     const userId = '123eqwdascz';
-
-    await service.createProduct(userId, createProductDto);
+    const files = {
+      detail: detail,
+      thumbnail: thumbnail,
+    };
+    await service.createProduct(userId, createProductDto, files);
 
     expect(spyRepository.createProduct).toHaveBeenCalled();
-    expect(spyRepository.createProduct).toHaveBeenCalledWith(createProductDto);
+    expect(spyRepository.createProduct).toHaveBeenCalledWith(
+      emptyImageTypeList,
+      emptyImageTypeList,
+      createProductDto,
+    );
     expect(spyMarketService.registerProduct).toHaveBeenCalled();
   });
 
   it('updateProduct() - 성공', async () => {
+    const detail: Express.MulterS3.File[] = [];
+    const thumbnail: Express.MulterS3.File[] = [];
     const updateProductDto: UpdateProductDto = {
       productName: 'productName',
       mainCategory: MainCategory.BAG,
@@ -114,8 +132,13 @@ describe('ProductService', () => {
       deliveryCharge: 4000,
     };
     const id = '123eqwdascz';
+    service.deleteFile = jest.fn();
+    const files = {
+      detail: detail,
+      thumbnail: thumbnail,
+    };
 
-    await service.updateProduct(id, updateProductDto);
+    await service.updateProduct(id, updateProductDto, files);
 
     expect(spyRepository.findById).toHaveBeenCalled();
     expect(spyRepository.findById).toHaveBeenCalledWith(id);
@@ -128,6 +151,9 @@ describe('ProductService', () => {
 
   it('deleteProduct() - 성공', async () => {
     const id = '123eqwdascz';
+    const detailImagePath: ImageType[] = [];
+    const thumbnailImagePath: ImageType[] = [];
+    service.deleteFile = jest.fn();
 
     await service.deleteProduct(id);
 
@@ -148,6 +174,8 @@ describe('ProductService', () => {
       purchaseDeadline: new Date(2020, 11, 12),
       deliveryCharge: 4000,
       createAt: new Date(2020, 11, 12),
+      detailImagePath: detailImagePath,
+      thumbnailImagePath: thumbnailImagePath,
     });
   });
 
@@ -170,6 +198,8 @@ describe('ProductService', () => {
       purchaseDeadline: new Date(2020, 11, 12),
       deliveryCharge: 4000,
       createAt: new Date(2020, 11, 12),
+      thumbnailImagePath: emptyImageTypeList,
+      detailImagePath: emptyImageTypeList,
     });
   });
 
@@ -180,6 +210,13 @@ describe('ProductService', () => {
     const subCategory = '남성';
     const country = '일본';
 
+    const data = service.createQueryOption(
+      [mainCategory],
+      [subCategory],
+      [country],
+      search,
+    );
+
     const result = await service.getAllProduct(
       [mainCategory],
       [subCategory],
@@ -189,13 +226,7 @@ describe('ProductService', () => {
     );
 
     expect(spyRepository.findAll).toHaveBeenCalled();
-    expect(spyRepository.findAll).toHaveBeenCalledWith(
-      [mainCategory],
-      [subCategory],
-      [country],
-      order,
-      search,
-    );
+    expect(spyRepository.findAll).toHaveBeenCalledWith(data, { createAt: -1 });
     expect(result).toEqual([
       {
         productName: 'productName',
@@ -213,16 +244,3 @@ describe('ProductService', () => {
     ]);
   });
 });
-
-// it('signUpUser() - 성공', async () => {
-//   const signUpUserDto: SignUpUserDto = {
-//     email: 'test@test.com',
-//     password: '!test123',
-//     passwordConfirm: '!test123',
-//     userName: 'userName',
-//     phone: '010-1234-1234',
-//   };
-//   await service.signUpUser(signUpUserDto);
-//   expect(spyRepository.createUser).toHaveBeenCalledTimes(1);
-//   expect(spyRepository.createUser).toHaveBeenCalledWith(signUpUserDto);
-// });
